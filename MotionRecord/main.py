@@ -31,74 +31,71 @@ class XL320:
 TORQUE_ENABLE = 1
 TORQUE_DISABLE = 0
 
-# DEVICENAME = "/dev/ttyUSB0"
-# portHandler = PortHandler(DEVICENAME)
+DEVICENAME = "/dev/ttyUSB0"
+portHandler = PortHandler(DEVICENAME)
 
-# PROTOCOL_VERSION = 2
-# packetHandler = PacketHandler(PROTOCOL_VERSION)
+PROTOCOL_VERSION = 2
+packetHandler = PacketHandler(PROTOCOL_VERSION)
 
-# if portHandler.openPort():
-#     print("Succeeded to open the port")
-# else:
-#     print("Failed to open the port")
-#     print("Press any key to terminate...")
-#     quit()
+if portHandler.openPort():
+    print("Succeeded to open the port")
+else:
+    print("Failed to open the port")
+    print("Press any key to terminate...")
+    quit()
 
 
-# # Set port baudrate
-# BAUDRATE = 1000000
-# if portHandler.setBaudRate(BAUDRATE):
-#     print("Succeeded to change the baudrate")
-# else:
-#     print("Failed to change the baudrate")
-#     print("Press any key to terminate...")
-#     quit()
+# Set port baudrate
+BAUDRATE = 1000000
+if portHandler.setBaudRate(BAUDRATE):
+    print("Succeeded to change the baudrate")
+else:
+    print("Failed to change the baudrate")
+    print("Press any key to terminate...")
+    quit()
 
 def writePosition(series, id, goal_deg_position):
-    # if series == "MX_Series":
-    #     dxl_goal_position = int(MXSeries.POSITION_ZERO + MXSeries.MAX_RESOLUTION * goal_deg_position / MXSeries.MAX_ANGLE)
-    #     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, id, MXSeries.ADDR_GOAL_POSITION, dxl_goal_position)
-    # elif series == "X_Series":
-    #     dxl_goal_position = int(XSeries.POSITION_ZERO + XSeries.MAX_RESOLUTION * goal_deg_position / XSeries.MAX_ANGLE)
-    #     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, id, XSeries.ADDR_GOAL_POSITION, dxl_goal_position)
-    # elif series == "XL320":
-    #     dxl_goal_position = int(XL320.POSITION_ZERO + XL320.MAX_RESOLUTION * goal_deg_position / XL320.MAX_ANGLE)
-    #     dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, id, XL320.ADDR_GOAL_POSITION, dxl_goal_position)
-    # if dxl_comm_result != COMM_SUCCESS:
-    #     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    # elif dxl_error != 0:
-    #     print("%s" % packetHandler.getRxPacketError(dxl_error))
-    pass
+    if series == "MX_Series":
+        dxl_goal_position = int(MXSeries.POSITION_ZERO + MXSeries.MAX_RESOLUTION * goal_deg_position / MXSeries.MAX_ANGLE)
+        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, id, MXSeries.ADDR_GOAL_POSITION, dxl_goal_position)
+    elif series == "X_Series":
+        dxl_goal_position = int(XSeries.POSITION_ZERO + XSeries.MAX_RESOLUTION * goal_deg_position / XSeries.MAX_ANGLE)
+        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, id, XSeries.ADDR_GOAL_POSITION, dxl_goal_position)
+    elif series == "XL320":
+        dxl_goal_position = int(XL320.POSITION_ZERO + XL320.MAX_RESOLUTION * goal_deg_position / XL320.MAX_ANGLE)
+        dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, id, XL320.ADDR_GOAL_POSITION, dxl_goal_position)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 def writeHardness(series, id, data_torque):
-    # if series == "MX_Series":
-    #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, MXSeries.ADDR_TORQUE_ENABLE, data_torque)
-    # elif series == "X_Series":
-    #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, XSeries.ADDR_TORQUE_ENABLE, data_torque)
-    # elif series == "XL320":
-    #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, XL320.ADDR_TORQUE_ENABLE, data_torque)
-    # if dxl_comm_result != COMM_SUCCESS:
-    #     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    # elif dxl_error != 0:
-    #     print("%s" % packetHandler.getRxPacketError(dxl_error))
-    pass
+    if series == "MX_Series":
+        dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, MXSeries.ADDR_TORQUE_ENABLE, data_torque)
+    elif series == "X_Series":
+        dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, XSeries.ADDR_TORQUE_ENABLE, data_torque)
+    elif series == "XL320":
+        dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, XL320.ADDR_TORQUE_ENABLE, data_torque)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 def readPosition(series, id):
-    # if series == "MX_Series":
-    #     dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, id, MXSeries.ADDR_PRESENT_POSITION)
-    #     cur_deg_position = (dxl_present_position - MXSeries.POSITION_ZERO) * MXSeries.MAX_ANGLE / MXSeries.MAX_RESOLUTION
-    # elif series == "X_Series":
-    #     dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, id, XSeries.ADDR_PRESENT_POSITION)
-    #     cur_deg_position = (dxl_present_position - XSeries.POSITION_ZERO) * XSeries.MAX_ANGLE / XSeries.MAX_RESOLUTION
-    # elif series == "XL320":
-    #     dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, id, XL320.ADDR_PRESENT_POSITION)
-    #     cur_deg_position = (dxl_present_position - XL320.POSITION_ZERO) * XL320.MAX_ANGLE / XL320.MAX_RESOLUTION
-    # if dxl_comm_result != COMM_SUCCESS:
-    #     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    # elif dxl_error != 0:
-    #     print("%s" % packetHandler.getRxPacketError(dxl_error))
-    # return cur_deg_position
-    pass
+    if series == "MX_Series":
+        dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, id, MXSeries.ADDR_PRESENT_POSITION)
+        cur_deg_position = (dxl_present_position - MXSeries.POSITION_ZERO) * MXSeries.MAX_ANGLE / MXSeries.MAX_RESOLUTION
+    elif series == "X_Series":
+        dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, id, XSeries.ADDR_PRESENT_POSITION)
+        cur_deg_position = (dxl_present_position - XSeries.POSITION_ZERO) * XSeries.MAX_ANGLE / XSeries.MAX_RESOLUTION
+    elif series == "XL320":
+        dxl_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, id, XL320.ADDR_PRESENT_POSITION)
+        cur_deg_position = (dxl_present_position - XL320.POSITION_ZERO) * XL320.MAX_ANGLE / XL320.MAX_RESOLUTION
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    return cur_deg_position
 
 class hipFunction:
     def __init__(self, window):
@@ -592,16 +589,16 @@ if __name__ == "__main__":
 try:
     sys.exit(app.exec())
 except SystemExit:
-    id=14 #for id in range(1, 30):
-    data_torque = 0
-    # if id == 13:
-    #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, MXSeries.ADDR_TORQUE_ENABLE, data_torque)
-    # elif id <= 16:
-    #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, XSeries.ADDR_TORQUE_ENABLE, data_torque)
-    # else:
-    #     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, XL320.ADDR_TORQUE_ENABLE, data_torque)
-    # if dxl_comm_result != COMM_SUCCESS:
-    #     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    # elif dxl_error != 0:
-    #     print("%s" % packetHandler.getRxPacketError(dxl_error))
-    # portHandler.closePort()
+    for id in range(13, 30):
+        data_torque = 0
+        if id == 13:
+            dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, MXSeries.ADDR_TORQUE_ENABLE, data_torque)
+        elif id <= 16:
+            dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, XSeries.ADDR_TORQUE_ENABLE, data_torque)
+        else:
+            dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, XL320.ADDR_TORQUE_ENABLE, data_torque)
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
+        portHandler.closePort()
