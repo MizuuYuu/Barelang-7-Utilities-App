@@ -565,7 +565,9 @@ class recordFunction:
         self.dataMotion.insert(self.window.spinBoxMotNum.value()*2,self.motionNumber)
         self.dataMotion.insert(self.window.spinBoxMotNum.value()*2+1,self.outputRecord)
         with open('motion_GUI.lua','w') as file:
+            file.write("local mot = {}\n\nmot.servos={13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,}\nmot.keyframes={\n\n")
             file.writelines(self.dataMotion)
+            file.write("}\n\nreturn mot;")
     def currentMotionNumber(self):
         pass
     
