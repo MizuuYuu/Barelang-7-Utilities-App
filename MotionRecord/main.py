@@ -2,7 +2,7 @@ import sys
 from dynamixel_sdk import *
 from PySide6.QtCore import Qt
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QMenuBar
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 
 class MXSeries:
     ADDR_TORQUE_ENABLE = 64
@@ -550,26 +550,34 @@ class recordFunction:
     def __init__(self, window):
         self.window = window
         self.window.buttonCapture.clicked.connect(self.capturePosition)
-        self.window.spinBoxMotNum.valueChanged.connect(self.currentMotionNumber)
         self.dataMotion = []
         with open("motion_GUI.lua",'r') as file:
             self.dataMotion = file.read().split('--#')
-        self.dataMotion.remove('')
+        if '' in self.dataMotion:
+            self.dataMotion.remove('')
+        if 'local mot = {}\n\nmot.servos={13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,}\nmot.keyframes={\n\n' in self.dataMotion:
+            self.dataMotion.remove('local mot = {}\n\nmot.servos={13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,}\nmot.keyframes={\n\n')
+        if '\n}\n\nreturn mot;' in self.dataMotion:
+            self.dataMotion.remove('\n}\n\nreturn mot;')
         print(self.dataMotion)
     def capturePosition(self):
         self.motionNumber = "--#--motion %d--#\n"%self.window.spinBoxMotNum.value()
         self.outputRecord = " {\nangles=vector.new({\n %.1f,\n %.1f,\n %.1f,\n %.1f,\n %.1f, %.1f, %.1f, %.1f, %.1f,\n %.1f, %.1f, %.1f, %.1f, %.1f,\n %.1f, %.1f, %.1f,\n})*math.pi/180,duration = 5\n },\n\n" % (self.window.spinBoxServo13.value()*-1, self.window.spinBoxServo14.value()*-1, self.window.spinBoxServo15.value()*-1, self.window.spinBoxServo16.value()*-1, self.window.spinBoxServo17.value(), self.window.spinBoxServo18.value(), self.window.spinBoxServo19.value()*-1, self.window.spinBoxServo20.value()*-1, self.window.spinBoxServo21.value(), self.window.spinBoxServo22.value(), self.window.spinBoxServo23.value()*-1, self.window.spinBoxServo24.value(), self.window.spinBoxServo25.value()*-1, self.window.spinBoxServo26.value()*-1, self.window.spinBoxServo27.value()*-1, self.window.spinBoxServo28.value()*-1, self.window.spinBoxServo29.value())
         if "--motion %d"%self.window.spinBoxMotNum.value() in self.dataMotion or self.motionNumber in self.dataMotion:
-            self.dataMotion.pop(self.window.spinBoxMotNum.value()*2)
-            self.dataMotion.pop(self.window.spinBoxMotNum.value()*2)
-        self.dataMotion.insert(self.window.spinBoxMotNum.value()*2,self.motionNumber)
-        self.dataMotion.insert(self.window.spinBoxMotNum.value()*2+1,self.outputRecord)
+            overWrite = QMessageBox.warning(self.window,"Warning","Overwrite Motion No. %d?"%self.window.spinBoxMotNum.value(),QMessageBox.Yes,QMessageBox.No)
+            if overWrite == QMessageBox.Yes:
+                self.dataMotion.pop(self.window.spinBoxMotNum.value()*2)
+                self.dataMotion.pop(self.window.spinBoxMotNum.value()*2)
+                self.dataMotion.insert(self.window.spinBoxMotNum.value()*2,self.motionNumber)
+                self.dataMotion.insert(self.window.spinBoxMotNum.value()*2+1,self.outputRecord)
+        else:
+            self.dataMotion.insert(self.window.spinBoxMotNum.value()*2,self.motionNumber)
+            self.dataMotion.insert(self.window.spinBoxMotNum.value()*2+1,self.outputRecord)
         with open('motion_GUI.lua','w') as file:
             file.write("local mot = {}\n\nmot.servos={13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,}\nmot.keyframes={\n\n")
             file.writelines(self.dataMotion)
-            file.write("}\n\nreturn mot;")
-    def currentMotionNumber(self):
-        pass
+            file.write("--#\n}\n\nreturn mot;")
+        QMessageBox.information(self.window,"Information","Position Record")
     
 class WindowRecMot(QMainWindow):
     def __init__(self):
@@ -590,9 +598,9 @@ if __name__ == "__main__":
     main_window = WindowRecMot()
 try:
     sys.exit(app.exec())
-except SystemExit:
+finally:
+    data_torque = 0
     for id in range(13, 30):
-        data_torque = 0
         if id == 13:
             dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, id, MXSeries.ADDR_TORQUE_ENABLE, data_torque)
         elif id <= 16:
@@ -603,4 +611,4 @@ except SystemExit:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
-        portHandler.closePort()
+    portHandler.closePort()
